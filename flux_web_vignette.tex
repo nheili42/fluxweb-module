@@ -1,0 +1,641 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Flux web module},
+  pdfauthor={Nate Heili},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Flux web module}
+\author{Nate Heili}
+\date{2025-03-27}
+
+\begin{document}
+\maketitle
+
+\section{Constructing energetic food webs using
+fluxweb}\label{constructing-energetic-food-webs-using-fluxweb}
+
+Here, I explore the math and theory behind \emph{fluxweb} (Gauzens et
+al.~2018), an R package that estimates energy fluxes between consumers
+and resources in food webs.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#install.packages("fluxweb")}
+\FunctionTok{library}\NormalTok{(fluxweb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'fluxweb' was built under R version 4.4.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+## v dplyr     1.1.4     v readr     2.1.5
+## v forcats   1.0.0     v stringr   1.5.1
+## v ggplot2   3.5.1     v tibble    3.2.1
+## v lubridate 1.9.4     v tidyr     1.3.1
+## v purrr     1.0.2     
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{??fluxweb }\CommentTok{\# explore functions and vignettes from the package}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## starting httpd help server ... done
+\end{verbatim}
+
+\subsection{Data structure and
+requirements}\label{data-structure-and-requirements}
+
+Below, I load the package vignette dataset ``species.level''. This
+dataset contains the matrix describing trophic interactions from a soil
+food web (Digel et al.~2014, Oikos) as well as ecological information on
+the species: biomasses, body masses, assimilation efficiencies, and
+species names.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Upload the species level data provided in the package vignette}
+\FunctionTok{data}\NormalTok{(}\StringTok{"species.level"}\NormalTok{)}
+
+\CommentTok{\# Explore the structure of the data}
+\FunctionTok{str}\NormalTok{(species.level)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## List of 5
+##  $ mat         : num [1:62, 1:62] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ biomasses   : num [1:62] 114.5 436.6 1 8.46 34.06 ...
+##  $ bodymasses  : num [1:62] 0.05 9.096 1 0.132 2.129 ...
+##  $ efficiencies: num [1:62] 0.906 0.906 0.545 0.906 0.906 0.906 0.906 0.906 0.906 0.906 ...
+##  $ names       : 'noquote' chr [1:62] "Achipteria coleoptrata" "Agriotes aterrimus (juv)" "algae" "Atheta sp. (juv)" ...
+\end{verbatim}
+
+\subsection{Calculate metabolic rates}\label{calculate-metabolic-rates}
+
+The metabolic rates represent energy losses per unit biomass for each
+species, based on allometric relationships (how metabolism scales with
+body size). This equation comes from the metabolic theory of ecology
+(Brown et al.~2004), where metabolic rate scales with body mass
+following a power law:
+
+\[
+B = B_0 M^b
+\]
+
+where: \(B\) is the metabolic rate, \(B_0\) is a normalization constant,
+\(M\) is body mass, and \(b\) is the scaling exponent (often around 0.75
+for metabolic rates in animals).
+
+There has been numerous studies that argue the nuance of these parameter
+values, and if available, the user can customize them by organism type
+or group (e.g.~ectotherm, endotherm, invertebrate, etc.). The loaded
+dataset in this example does not come with organism group so we won't
+worry about that for now. The average values from the MTE over all
+species groups for parameters a and b are 0.71 and −0.25. Thus:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calculate metabolic losses}
+\NormalTok{losses }\OtherTok{=} \FloatTok{0.71} \SpecialCharTok{*}\NormalTok{ species.level}\SpecialCharTok{$}\NormalTok{bodymasses}\SpecialCharTok{\^{}}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{0.25}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Feeding efficiencies}\label{feeding-efficiencies}
+
+The final parameter needed to calculate energy fluxes is a vector of
+feeding efficiencies. Because species' physiological losses were
+estimated using metabolic rates, assimilation efficiency should be used.
+Assimilation efficiency (AE) represents the proportion of consumed food
+that an organism can actually use for metabolism and growth. Not all
+ingested food is useful---some is lost as waste (e.g., undigested
+material in feces). Additonally, because not all food is nutritionally
+the same, AE can be customized based on the type of prey eaten. In this
+dataset, AE values were predefined for different prey types
+(species.level\$efficiencies), where 0.906 is animal, 0.545 is plant,
+and 0.158 is detritus.
+
+\section{Calculate energy fluxes}\label{calculate-energy-fluxes}
+
+Now that we have our ducks in a row, we use the \emph{fluxing} function
+to calculate energy fluxes between species. This function solves for the
+equilibrium fluxes needed to maintain biomass balance in the system. For
+each species, energy gains (incoming fluxes * efficiency) must balance
+or equal energy losses (metabolism + outgoing fluxes).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mat.fluxes }\OtherTok{\textless{}{-}} \FunctionTok{fluxing}\NormalTok{(species.level}\SpecialCharTok{$}\NormalTok{mat,}
+\NormalTok{                      species.level}\SpecialCharTok{$}\NormalTok{biomasses,}
+\NormalTok{                      losses,}
+\NormalTok{                      species.level}\SpecialCharTok{$}\NormalTok{efficiencies)}
+\end{Highlighting}
+\end{Shaded}
+
+This step is where the package provides user flexibility, and it is
+important to note the default behavior of the of the \emph{fluxing}
+function:\\
+Note, there is much more detail in the journal article!!
+
+\subsubsection{Influence of prey availability on feeding
+(bioms.prefs)}\label{influence-of-prey-availability-on-feeding-bioms.prefs}
+
+The default behavior of \emph{fluxing} assumes that predators adjust
+their feeding preferences based on the biomass of available prey. This
+means that when bioms.pref = TRUE, the function scales the diet
+preferences from the food web matrix according to prey biomasses. As a
+result, more abundant prey are consumed at higher proportions, while
+less abundant prey contribute less to the total energy flux.
+
+However, users have the flexibility to override this default behavior.
+Setting bioms.pref = FALSE keeps the raw diet preferences unchanged,
+meaning that predators will consume prey in fixed proportions regardless
+of their biomass. This may be useful in cases where feeding behavior is
+constrained by factors other than prey abundance, such as specialist
+diets or strong prey selection mechanisms.
+
+\subsubsection{Influence of metabolic losses
+(bioms.losses)}\label{influence-of-metabolic-losses-bioms.losses}
+
+The default behavior of \emph{fluxing} assumes metabolic losses are the
+product of species' biomasses (species.level\$biomasses) and a loss rate
+per unit biomass (the losses vector calculated above using parameters
+from the MTE). This approach assumes that metabolic losses scale with
+body size, and larger species will have greater total metabolic losses.
+
+However, if direct respiration measurements are available, users can
+override this scaling setting. In this case, the model uses observed
+respiration rates or other population-level metabolic data instead of
+relying on body mass scaling.
+
+\subsubsection{Influence of assimilation efficiency defined by prey
+(ef.level)}\label{influence-of-assimilation-efficiency-defined-by-prey-ef.level}
+
+The defualt behavior ef.level = ``prey'' assumes that the assimilation
+efficiencies are defined according to prey quality (resource defined).
+
+However, if available, the user can define predator specific
+assimilation efficiencies ef.level = ``pred'' (consumer defined).
+
+\section{Visualize the energy flux
+distributions}\label{visualize-the-energy-flux-distributions}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Convert the matrix to a vector of values for distribution analysis}
+\NormalTok{flux\_values }\OtherTok{\textless{}{-}} \FunctionTok{as.vector}\NormalTok{(mat.fluxes)}
+\NormalTok{flux\_values }\OtherTok{\textless{}{-}}\NormalTok{ flux\_values[flux\_values }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{]  }\CommentTok{\# Remove zero values (non{-}interactions)}
+
+\CommentTok{\# Basic statistics}
+\FunctionTok{summary}\NormalTok{(flux\_values)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##    0.001    0.421    1.720   41.477    6.839 3220.344
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Histogram of flux values}
+\FunctionTok{hist}\NormalTok{(flux\_values, }
+     \AttributeTok{main =} \StringTok{"Distribution of Energy Fluxes"}\NormalTok{, }
+     \AttributeTok{xlab =} \StringTok{"Energy flux (Joules/year)"}\NormalTok{,}
+     \AttributeTok{col =} \StringTok{"skyblue"}\NormalTok{,}
+     \AttributeTok{breaks =} \DecValTok{30}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{flux_web_vignette_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Log{-}transformed histogram (often useful for flux data which can be skewed)}
+\FunctionTok{hist}\NormalTok{(}\FunctionTok{log10}\NormalTok{(flux\_values), }
+     \AttributeTok{main =} \StringTok{"Distribution of Energy Fluxes"}\NormalTok{, }
+     \AttributeTok{xlab =} \StringTok{"ln(Energy flux [Joules/year])"}\NormalTok{,}
+     \AttributeTok{col =} \StringTok{"lightgreen"}\NormalTok{,}
+     \AttributeTok{breaks =} \DecValTok{30}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{flux_web_vignette_files/figure-latex/unnamed-chunk-5-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Density plot}
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{density}\NormalTok{(flux\_values), }
+     \AttributeTok{main =} \StringTok{"Density Plot of Energy Fluxes"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"Energy Flux Value"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{flux_web_vignette_files/figure-latex/unnamed-chunk-5-3.pdf}
+
+\section{Incorporating environmental temperature into metaboloic
+lossess}\label{incorporating-environmental-temperature-into-metaboloic-lossess}
+
+Metabolic rate not only scales with body mass but also responds strongly
+to environmental temperature, particularly in ectothermic organisms. To
+reflect this, we can integrate temperature into metabolic loss estimates
+following the approach of Schwarz et al.~(2017), which builds on the
+metabolic theory of ecology (Brown et al.~2004).
+
+\[
+B = B_0 M^b e^{-\frac{E}{k_B T}}
+\]
+
+Where:\\
+- \(B\) is the temperature-dependent metabolic rate,\\
+- \(B_0\) is a normalization constant,\\
+- \(M\) is fresh body mass (g),\\
+- \(b\) is the allometric exponent (typically 0.75),\\
+- \(E\) is the activation energy (eV),\\
+- \(k_B\) is the Boltzmann constant (8.617 × 10⁻⁵ eV/K),\\
+- \(T\) is absolute temperature in Kelvin (K).
+
+Below, I will use this equation to simulate metabolic energy losses
+across the community under two temperature scenarios, 4 and 20 degree C.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Constants from literature}
+\NormalTok{k\_B }\OtherTok{\textless{}{-}} \FloatTok{8.617e{-}5}              \CommentTok{\# Boltzmann constant in eV/K}
+\NormalTok{B0 }\OtherTok{\textless{}{-}} \FloatTok{0.88}                   \CommentTok{\# Normalization constant}
+\NormalTok{b }\OtherTok{\textless{}{-}} \FloatTok{0.75}                    \CommentTok{\# Allometric exponent}
+\NormalTok{E }\OtherTok{\textless{}{-}} \FloatTok{0.63}                    \CommentTok{\# Activation energy in eV}
+
+\CommentTok{\#Losses at 4 degree C }
+\NormalTok{losses\_4C }\OtherTok{\textless{}{-}}\NormalTok{ B0 }\SpecialCharTok{*}\NormalTok{ species.level}\SpecialCharTok{$}\NormalTok{bodymass}\SpecialCharTok{\^{}}\NormalTok{b }\SpecialCharTok{*} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{E }\SpecialCharTok{/}\NormalTok{ (k\_B }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{4} \SpecialCharTok{+} \FloatTok{273.15}\NormalTok{))) }\CommentTok{\#convert C to Kelvin}
+
+\CommentTok{\#Losses at 20 degree C}
+\NormalTok{losses\_20C }\OtherTok{\textless{}{-}}\NormalTok{ B0 }\SpecialCharTok{*}\NormalTok{ species.level}\SpecialCharTok{$}\NormalTok{bodymass}\SpecialCharTok{\^{}}\NormalTok{b }\SpecialCharTok{*} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{E }\SpecialCharTok{/}\NormalTok{ (k\_B }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{20} \SpecialCharTok{+} \FloatTok{273.15}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Calculate energy fluxes for cold and
+warm}\label{calculate-energy-fluxes-for-cold-and-warm}
+
+Now we do the same as above to estimate energy fluxes between species
+for each of the temperature scenarios.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cold.fluxes }\OtherTok{\textless{}{-}} \FunctionTok{fluxing}\NormalTok{(species.level}\SpecialCharTok{$}\NormalTok{mat,}
+\NormalTok{                      species.level}\SpecialCharTok{$}\NormalTok{biomasses,}
+\NormalTok{                      losses\_4C,}
+\NormalTok{                      species.level}\SpecialCharTok{$}\NormalTok{efficiencies)}
+
+\NormalTok{warm.fluxes }\OtherTok{\textless{}{-}} \FunctionTok{fluxing}\NormalTok{(species.level}\SpecialCharTok{$}\NormalTok{mat,}
+\NormalTok{                      species.level}\SpecialCharTok{$}\NormalTok{biomasses,}
+\NormalTok{                      losses\_20C,}
+\NormalTok{                      species.level}\SpecialCharTok{$}\NormalTok{efficiencies)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Visualize energy flux distribtuions with
+temperature-dependent metabolic
+losses}\label{visualize-energy-flux-distribtuions-with-temperature-dependent-metabolic-losses}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Convert the matrix to a vector of values for distribution analysis}
+\NormalTok{warm.flux.values }\OtherTok{\textless{}{-}} \FunctionTok{as.vector}\NormalTok{(warm.fluxes)}
+\NormalTok{warm.flux.values }\OtherTok{\textless{}{-}}\NormalTok{ warm.flux.values[warm.flux.values }\SpecialCharTok{\textgreater{}}\DecValTok{0}\NormalTok{]}
+
+\CommentTok{\# Convert the matrix to a vector of values for distribution analysis}
+\NormalTok{cold.flux.values }\OtherTok{\textless{}{-}} \FunctionTok{as.vector}\NormalTok{(cold.fluxes)}
+\NormalTok{cold.flux.values }\OtherTok{\textless{}{-}}\NormalTok{ cold.flux.values[cold.flux.values }\SpecialCharTok{\textgreater{}}\DecValTok{0}\NormalTok{]}
+
+\CommentTok{\# Basic statistics}
+\FunctionTok{summary}\NormalTok{(warm.flux.values)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 0.000e+00 6.200e-10 2.530e-09 1.515e-07 1.030e-08 5.946e-05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(cold.flux.values)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 0.000e+00 1.470e-10 6.010e-10 3.590e-08 2.440e-09 1.409e-05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Combine your data into one data frame}
+\NormalTok{flux.data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{value =} \FunctionTok{c}\NormalTok{(cold.flux.values, warm.flux.values),}
+  \AttributeTok{temperature =} \FunctionTok{factor}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"Cold (4°C)"}\NormalTok{, }\StringTok{"Warm (20°C)"}\NormalTok{), }
+                           \AttributeTok{times =} \FunctionTok{c}\NormalTok{(}\FunctionTok{length}\NormalTok{(cold.flux.values), }\FunctionTok{length}\NormalTok{(warm.flux.values))))}
+\NormalTok{)}
+
+\CommentTok{\# Plot histogram, another way to visualize the data}
+\FunctionTok{ggplot}\NormalTok{(flux.data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ value, }\AttributeTok{fill =}\NormalTok{ temperature)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{position =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{bins =} \DecValTok{50}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_x\_log10}\NormalTok{() }\SpecialCharTok{+} 
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}
+    \AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Cold (4°C)"} \OtherTok{=} \StringTok{"\#1f77b4"}\NormalTok{,  }
+               \StringTok{"Warm (20°C)"} \OtherTok{=} \StringTok{"\#ff7f0e"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{x =} \StringTok{"Log Energy flux (J/s)"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Count"}\NormalTok{,}
+    \AttributeTok{fill =} \StringTok{"Temperature"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_light}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{16}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{flux_web_vignette_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Total energy flux in each temperature scenario}
+\NormalTok{total.warm.flux }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(warm.flux.values, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{total.cold.flux }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(cold.flux.values, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# Create a data frame for plotting}
+\NormalTok{total.flux.df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{temperature =} \FunctionTok{c}\NormalTok{(}\StringTok{"Cold (4°C)"}\NormalTok{, }\StringTok{"Warm (20°C)"}\NormalTok{),}
+  \AttributeTok{total\_flux =} \FunctionTok{c}\NormalTok{(total.cold.flux, total.warm.flux)}
+\NormalTok{)}
+
+\CommentTok{\# Bar plot}
+\FunctionTok{ggplot}\NormalTok{(total.flux.df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ temperature, }\AttributeTok{y =}\NormalTok{ total\_flux, }\AttributeTok{fill =}\NormalTok{ temperature)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Cold (4°C)"} \OtherTok{=} \StringTok{"\#1f77b4"}\NormalTok{, }\StringTok{"Warm (20°C)"} \OtherTok{=} \StringTok{"\#ff7f0e"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Total Energy Flux in Food Web"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Total Flux (J/s)"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Temperature"}\NormalTok{,}
+    \AttributeTok{fill =} \StringTok{""}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_light}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{flux_web_vignette_files/figure-latex/unnamed-chunk-8-2.pdf}
+
+Although the structure of the distribution stayed the same, warming
+shifts the distribution toward higher flux values, driving greater total
+energy flux in the food web. Therefore, if community richness and
+biomass stay the same (as in this scenario), organisms in the warmed
+system must increase the rate at which they consumer energy. This
+results in a faster flow of energy through trophic interactions and an
+overall increase in energy turnover within the food web. Alternatively,
+organisms may not be able to keep up with metabolic demands and be lost
+or reduced.
+
+\#Removing vulnerable species from the food web Warming might remove
+vulnerable species (in this case, those with low biomasses). To model
+this, remove all species in the matrix with log(biomass) \textless{} 1.
+Then calculate the new energy flux distribution and compare to the cold
+scenario.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Identify species to keep (biomasses ≤ log(1) = 0)}
+\NormalTok{keep }\OtherTok{\textless{}{-}} \FunctionTok{log}\NormalTok{(species.level}\SpecialCharTok{$}\NormalTok{biomasses) }\SpecialCharTok{\textgreater{}=} \DecValTok{1}
+
+\CommentTok{\# Subset each component of the list accordingly}
+\NormalTok{warm.species.level }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+  \AttributeTok{mat =}\NormalTok{ species.level}\SpecialCharTok{$}\NormalTok{mat[keep, keep],  }\CommentTok{\# subset rows and columns}
+  \AttributeTok{biomasses =}\NormalTok{ species.level}\SpecialCharTok{$}\NormalTok{biomasses[keep],}
+  \AttributeTok{bodymasses =}\NormalTok{ species.level}\SpecialCharTok{$}\NormalTok{bodymasses[keep],}
+  \AttributeTok{efficiencies =}\NormalTok{ species.level}\SpecialCharTok{$}\NormalTok{efficiencies[keep],}
+  \AttributeTok{names =}\NormalTok{ species.level}\SpecialCharTok{$}\NormalTok{names[keep]}
+\NormalTok{)}
+
+\NormalTok{losses\_20C}\FloatTok{.2} \OtherTok{\textless{}{-}}\NormalTok{ B0 }\SpecialCharTok{*}\NormalTok{ warm.species.level}\SpecialCharTok{$}\NormalTok{bodymass}\SpecialCharTok{\^{}}\NormalTok{b }\SpecialCharTok{*} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{E }\SpecialCharTok{/}\NormalTok{ (k\_B }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{20} \SpecialCharTok{+} \FloatTok{273.15}\NormalTok{)))}
+
+
+\NormalTok{warm.fluxes}\FloatTok{.2} \OtherTok{\textless{}{-}} \FunctionTok{fluxing}\NormalTok{(warm.species.level}\SpecialCharTok{$}\NormalTok{mat,}
+\NormalTok{                      warm.species.level}\SpecialCharTok{$}\NormalTok{biomasses,}
+\NormalTok{                      losses\_20C}\FloatTok{.2}\NormalTok{,}
+\NormalTok{                      warm.species.level}\SpecialCharTok{$}\NormalTok{efficiencies)}
+
+
+\CommentTok{\# Convert the matrix to a vector of values for distribution analysis}
+\NormalTok{warm.flux.values }\OtherTok{\textless{}{-}} \FunctionTok{as.vector}\NormalTok{(warm.fluxes}\FloatTok{.2}\NormalTok{)}
+\NormalTok{warm.flux.values }\OtherTok{\textless{}{-}}\NormalTok{ warm.flux.values[warm.flux.values }\SpecialCharTok{\textgreater{}}\DecValTok{0}\NormalTok{]}
+
+
+\CommentTok{\# Basic statistics}
+\FunctionTok{summary}\NormalTok{(warm.flux.values)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 1.600e-11 1.394e-09 4.548e-09 4.513e-08 1.370e-08 1.031e-05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(cold.flux.values)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 0.000e+00 1.470e-10 6.010e-10 3.590e-08 2.440e-09 1.409e-05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Combine your data into one data frame}
+\NormalTok{flux.data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{value =} \FunctionTok{c}\NormalTok{(cold.flux.values, warm.flux.values),}
+  \AttributeTok{temperature =} \FunctionTok{factor}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"Cold (4°C)"}\NormalTok{, }\StringTok{"Warm (20°C)"}\NormalTok{), }
+                           \AttributeTok{times =} \FunctionTok{c}\NormalTok{(}\FunctionTok{length}\NormalTok{(cold.flux.values), }\FunctionTok{length}\NormalTok{(warm.flux.values))))}
+\NormalTok{)}
+
+\CommentTok{\# Plot histogram, another way to visualize the data}
+\FunctionTok{ggplot}\NormalTok{(flux.data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ value, }\AttributeTok{fill =}\NormalTok{ temperature)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{position =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{bins =} \DecValTok{50}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_x\_log10}\NormalTok{() }\SpecialCharTok{+} 
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}
+    \AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Cold (4°C)"} \OtherTok{=} \StringTok{"\#1f77b4"}\NormalTok{,  }
+               \StringTok{"Warm (20°C)"} \OtherTok{=} \StringTok{"\#ff7f0e"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{x =} \StringTok{"Log Energy flux (J/s)"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Count"}\NormalTok{,}
+    \AttributeTok{fill =} \StringTok{"Temperature"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_light}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{16}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{flux_web_vignette_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Total energy flux in each temperature scenario}
+\NormalTok{total.warm.flux }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(warm.flux.values, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{total.cold.flux }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(cold.flux.values, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# Create a data frame for plotting}
+\NormalTok{total.flux.df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{temperature =} \FunctionTok{c}\NormalTok{(}\StringTok{"Cold (4°C)"}\NormalTok{, }\StringTok{"Warm (20°C)"}\NormalTok{),}
+  \AttributeTok{total\_flux =} \FunctionTok{c}\NormalTok{(total.cold.flux, total.warm.flux)}
+\NormalTok{)}
+
+\CommentTok{\# Bar plot}
+\FunctionTok{ggplot}\NormalTok{(total.flux.df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ temperature, }\AttributeTok{y =}\NormalTok{ total\_flux, }\AttributeTok{fill =}\NormalTok{ temperature)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Cold (4°C)"} \OtherTok{=} \StringTok{"\#1f77b4"}\NormalTok{, }\StringTok{"Warm (20°C)"} \OtherTok{=} \StringTok{"\#ff7f0e"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Total Energy Flux in Food Web"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Total Flux (J/s)"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Temperature"}\NormalTok{,}
+    \AttributeTok{fill =} \StringTok{""}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_light}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{flux_web_vignette_files/figure-latex/unnamed-chunk-9-2.pdf}
+
+The results from this scenario align with expectation for real
+communities. Warming is likely to filter out certain species-
+particularly those adapted to cold environments or occupying higher
+trophic levels (e.g., generally those with low biomasses). This
+filtering effects reduces the magnitude of the energy flux distribution
+due to the loss of organisms from the food web. As a result, the total
+energy demand decreases and becomes lower than in the cold scenario,
+even though energetic losses to metabolism are higher under warming.
+This suggests that warming can shift the energetic budget of food webs.
+Moreover, when species are lost, structural changes may also occur if
+remaining species begin exploiting new food resources, potentially
+reconfiguring trophic interactions.
+
+\end{document}

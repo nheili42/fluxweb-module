@@ -1,0 +1,378 @@
+---
+title: "Flux web module"
+author: "Nate Heili"
+date: "2025-03-27"
+output:
+  html_document: default
+  pdf_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Constructing energetic food webs using fluxweb
+Here, I explore the math and theory behind *fluxweb* (Gauzens et al. 2018), an R package that estimates energy fluxes between consumers and resources in food webs. 
+
+```{r}
+#install.packages("fluxweb")
+library(fluxweb)
+library(tidyverse)
+??fluxweb # explore functions and vignettes from the package
+```
+
+## Data structure and requirements
+Below, I load the package vignette dataset "species.level". This dataset contains the matrix describing trophic interactions from a soil food web (Digel et al. 2014, Oikos) as well as ecological information on the species: biomasses, body masses, assimilation efficiencies, and species names. 
+```{r}
+# Upload the species level data provided in the package vignette
+data("species.level")
+
+# Explore the structure of the data
+str(species.level)
+
+```
+
+## Calculate metabolic rates
+The metabolic rates represent energy losses per unit biomass for each species, based on allometric relationships (how metabolism scales with body size). This equation comes from the metabolic theory of ecology (Brown et al. 2004), where metabolic rate scales with body mass following a power law: 
+
+\[
+B = B_0 M^b
+\]
+
+where:
+\( B \) is the metabolic rate,
+\( B_0 \) is a normalization constant,
+\( M \) is body mass, and
+\( b \) is the scaling exponent (often around 0.75 for metabolic rates in animals).
+
+There has been numerous studies that argue the nuance of these parameter values, and if available, the user can customize them by organism type or group (e.g. ectotherm, endotherm, invertebrate, etc.). The loaded dataset in this example does not come with organism group so we won't worry about that for now. The average values from the MTE over all species groups for parameters a and b are 0.71 and −0.25. Thus:
+
+```{r}
+# Calculate metabolic losses
+losses = 0.71 * species.level$bodymasses^(-0.25)
+
+```
+
+## Feeding efficiencies
+The final parameter needed to calculate energy fluxes is a vector of feeding efficiencies. Because species' physiological losses were estimated using metabolic rates, assimilation efficiency should be used. Assimilation efficiency (AE) represents the proportion of consumed food that an organism can actually use for metabolism and growth. Not all ingested food is useful—some is lost as waste (e.g., undigested material in feces). Additonally, because not all food is nutritionally the same, AE can be customized based on the type of prey eaten. In this dataset, AE values were predefined for different prey types (species.level$efficiencies), where 0.906 is animal, 0.545 is plant, and 0.158 is detritus.
+
+# Calculate energy fluxes 
+Now that we have our ducks in a row, we use the *fluxing* function to calculate energy fluxes between species. This function solves for the equilibrium fluxes needed to maintain biomass balance in the system. For each species, energy gains (incoming fluxes * efficiency) must balance or equal energy losses (metabolism + outgoing fluxes). 
+
+```{r}
+mat.fluxes <- fluxing(species.level$mat,
+                      species.level$biomasses,
+                      losses,
+                      species.level$efficiencies)
+```
+
+This step is where the package provides user flexibility, and it is important to note the default behavior of the of the *fluxing* function:  
+Note, there is much more detail in the journal article!!
+
+### Influence of prey availability on feeding (bioms.prefs)
+The default behavior of *fluxing* assumes that predators adjust their feeding preferences based on the biomass of available prey. This means that when bioms.pref = TRUE, the function scales the diet preferences from the food web matrix according to prey biomasses. As a result, more abundant prey are consumed at higher proportions, while less abundant prey contribute less to the total energy flux. 
+
+However, users have the flexibility to override this default behavior. Setting bioms.pref = FALSE keeps the raw diet preferences unchanged, meaning that predators will consume prey in fixed proportions regardless of their biomass. This may be useful in cases where feeding behavior is constrained by factors other than prey abundance, such as specialist diets or strong prey selection mechanisms. 
+
+### Influence of metabolic losses (bioms.losses)
+The default behavior of *fluxing* assumes metabolic losses are the product of species' biomasses (species.level$biomasses) and a loss rate per unit biomass (the losses vector calculated above using parameters from the MTE). This approach assumes that metabolic losses scale with body size, and larger species will have greater total metabolic losses. 
+
+However, if direct respiration measurements are available, users can override this scaling setting. In this case, the model uses observed respiration rates or other population-level metabolic data instead of relying on body mass scaling. 
+
+### Influence of assimilation efficiency defined by prey (ef.level)
+The defualt behavior ef.level = "prey" assumes that the assimilation efficiencies are defined according to prey quality (resource defined).
+
+However, if available, the user can define predator specific assimilation efficiencies ef.level = "pred" (consumer defined). 
+
+
+# Visualize the energy flux distributions
+
+```{r}
+# Convert the matrix to a vector of values for distribution analysis
+flux_values <- as.vector(mat.fluxes)
+flux_values <- flux_values[flux_values > 0]  # Remove zero values (non-interactions)
+
+# Basic statistics
+summary(flux_values)
+
+# Histogram of flux values
+hist(flux_values, 
+     main = "Distribution of Energy Fluxes", 
+     xlab = "Energy flux (Joules/year)",
+     col = "skyblue",
+     breaks = 30)
+
+# Log-transformed histogram (often useful for flux data which can be skewed)
+hist(log10(flux_values), 
+     main = "Distribution of Energy Fluxes", 
+     xlab = "ln(Energy flux [Joules/year])",
+     col = "lightgreen",
+     breaks = 30)
+
+# Density plot
+plot(density(flux_values), 
+     main = "Density Plot of Energy Fluxes",
+     xlab = "Energy Flux Value")
+```
+
+# Incorporating environmental temperature into metaboloic rates of organisms 
+Metabolic rate not only scales with body mass but also responds strongly to environmental temperature, particularly in ectothermic organisms. To reflect this, we can integrate temperature into metabolic loss estimates following the approach of Schwarz et al. (2017), which builds on the metabolic theory of ecology (Gilooly et al. 2001, Brown et al. 2004).
+
+\[
+B = B_0 M^b e^{-\frac{E}{k_B T}}
+\]
+
+Where:  
+- \( B \) is the temperature-dependent metabolic rate,  
+- \( B_0 \) is a normalization constant,  
+- \( M \) is fresh body mass (g),  
+- \( b \) is the allometric exponent (typically 0.75),  
+- \( E \) is the activation energy (eV),  
+- \( k_B \) is the Boltzmann constant (8.617 × 10⁻⁵ eV/K),  
+- \( T \) is absolute temperature in Kelvin (K).
+
+Below, I will use this equation to simulate metabolic energy losses across the community under two temperature scenarios, 4 and 20 degree C.
+
+```{r}
+#Constants from literature
+k_B <- 8.617e-5              # Boltzmann constant in eV/K
+B0 <- 0.88                   # Normalization constant
+b <- 0.75                    # Allometric exponent
+E <- 0.63                    # Activation energy in eV
+
+#Losses at 4 degree C 
+losses_4C <- B0 * species.level$bodymass^b * exp(-E / (k_B * (4 + 273.15))) #convert C to Kelvin
+
+#Losses at 20 degree C
+losses_20C <- B0 * species.level$bodymass^b * exp(-E / (k_B * (20 + 273.15)))
+
+# Visualize energetic losses to metabolism between temp scenarios across body mass in the community
+losses_by_mass <- data.frame(
+  bodymass = rep(species.level$bodymass, 2),
+  losses = c(losses_4C, losses_20C),
+  temperature = factor(rep(c("4°C", "20°C"), each = length(species.level$bodymass)))
+)
+
+ggplot(losses_by_mass, aes(x = bodymass, y = losses, color = temperature)) +
+  geom_point(alpha = 0.5, size = 2) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = c("4°C" = "#1f77b4", "20°C" = "#ff7f0e")) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(
+    x = "Body mass (mg)",
+    y = "Metabolic loss (J/s)",
+    color = "Temperature"
+  ) +
+  theme_light()
+
+
+```
+This shows that metabolic energy losses scale with temperature and body mass. 
+
+# Calculate energy fluxes for cold and warm 
+Now we do the same as above to estimate energy fluxes between species for each of the temperature scenarios.
+
+```{r}
+cold.fluxes <- fluxing(species.level$mat,
+                      species.level$biomasses,
+                      losses_4C,
+                      species.level$efficiencies)
+
+warm.fluxes <- fluxing(species.level$mat,
+                      species.level$biomasses,
+                      losses_20C,
+                      species.level$efficiencies)
+```
+
+## Visualize energy flux distribtuions with temperature-dependent metabolic losses
+
+```{r}
+# Convert the matrix to a vector of values for distribution analysis
+warm.flux.values <- as.vector(warm.fluxes)
+warm.flux.values <- warm.flux.values[warm.flux.values >0]
+
+# Convert the matrix to a vector of values for distribution analysis
+cold.flux.values <- as.vector(cold.fluxes)
+cold.flux.values <- cold.flux.values[cold.flux.values >0]
+
+# Basic statistics
+summary(warm.flux.values)
+summary(cold.flux.values)
+# Combine your data into one data frame
+flux.data <- data.frame(
+  value = c(cold.flux.values, warm.flux.values),
+  temperature = factor(rep(c("Cold (4°C)", "Warm (20°C)"), 
+                           times = c(length(cold.flux.values), length(warm.flux.values))))
+)
+
+# Plot histogram, another way to visualize the data
+ggplot(flux.data, aes(x = value, fill = temperature)) +
+  geom_histogram(position = "identity", bins = 50, alpha = 0.6) +
+  scale_x_log10() + 
+  scale_fill_manual(
+    values = c("Cold (4°C)" = "#1f77b4",  
+               "Warm (20°C)" = "#ff7f0e")
+  ) +
+  labs(
+    x = "Log Energy flux (J/s)",
+    y = "Count",
+    fill = "Temperature"
+  ) +
+  theme_light() +
+  theme(text = element_text(size = 16))
+
+# Total energy flux in each temperature scenario
+total.warm.flux <- sum(warm.flux.values, na.rm = TRUE)
+total.cold.flux <- sum(cold.flux.values, na.rm = TRUE)
+
+# Create a data frame for plotting
+total.flux.df <- data.frame(
+  temperature = c("Cold (4°C)", "Warm (20°C)"),
+  total_flux = c(total.cold.flux, total.warm.flux)
+)
+
+# Bar plot
+ggplot(total.flux.df, aes(x = temperature, y = total_flux, fill = temperature)) +
+  geom_col(width = 0.6) +
+  scale_fill_manual(values = c("Cold (4°C)" = "#1f77b4", "Warm (20°C)" = "#ff7f0e")) +
+  labs(
+    title = "Total Energy Flux in Food Web",
+    y = "Total Flux (J/s)",
+    x = "Temperature",
+    fill = ""
+  ) +
+  theme_light()
+
+```
+
+Although the structure of the distribution stayed the same, warming shifts the distribution toward higher flux values, driving greater total energy flux in the food web. Therefore, if community richness and biomass stay the same (as in this scenario), organisms in the warmed system must increase the rate at which they consumer energy. This results in a faster flow of energy through trophic interactions and an overall increase in energy turnover within the food web. Alternatively, organisms may not be able to keep up with metabolic demands and be lost or reduced.
+
+#Removing vulnerable species from the food web 
+Warming might remove vulnerable species (in this case, those with low biomasses). To model this, remove all species in the matrix with log(biomass) < 1. Then calculate the new energy flux distribution and compare to the cold scenario.
+
+```{r}
+
+hist(log(species.level$biomasses))
+# Identify species to keep (biomasses ≤ log(1) = 0)
+keep <- log(species.level$biomasses) >= 1
+
+# Subset each component of the list accordingly
+warm.species.level <- list(
+  mat = species.level$mat[keep, keep],  # subset rows and columns
+  biomasses = species.level$biomasses[keep],
+  bodymasses = species.level$bodymasses[keep],
+  efficiencies = species.level$efficiencies[keep],
+  names = species.level$names[keep]
+)
+
+losses_20C.2 <- B0 * warm.species.level$bodymass^b * exp(-E / (k_B * (20 + 273.15)))
+
+
+warm.fluxes.2 <- fluxing(warm.species.level$mat,
+                      warm.species.level$biomasses,
+                      losses_20C.2,
+                      warm.species.level$efficiencies)
+
+
+# Convert the matrix to a vector of values for distribution analysis
+warm.flux.values <- as.vector(warm.fluxes.2)
+warm.flux.values <- warm.flux.values[warm.flux.values >0]
+
+
+# Basic statistics
+summary(warm.flux.values)
+summary(cold.flux.values)
+
+# Combine your data into one data frame
+flux.data <- data.frame(
+  value = c(cold.flux.values, warm.flux.values),
+  temperature = factor(rep(c("Cold (4°C)", "Warm (20°C)"), 
+                           times = c(length(cold.flux.values), length(warm.flux.values))))
+)
+
+# Plot histogram, another way to visualize the data
+ggplot(flux.data, aes(x = value, fill = temperature)) +
+  geom_histogram(position = "identity", bins = 50, alpha = 0.6) +
+  scale_x_log10() + 
+  scale_fill_manual(
+    values = c("Cold (4°C)" = "#1f77b4",  
+               "Warm (20°C)" = "#ff7f0e")
+  ) +
+  labs(
+    x = "Log Energy flux (J/s)",
+    y = "Count",
+    fill = "Temperature"
+  ) +
+  theme_light() +
+  theme(text = element_text(size = 16))
+
+# Total energy flux in each temperature scenario
+total.warm.flux <- sum(warm.flux.values, na.rm = TRUE)
+total.cold.flux <- sum(cold.flux.values, na.rm = TRUE)
+
+# Create a data frame for plotting
+total.flux.df <- data.frame(
+  temperature = c("Cold (4°C)", "Warm (20°C)"),
+  total_flux = c(total.cold.flux, total.warm.flux)
+)
+
+# Bar plot
+ggplot(total.flux.df, aes(x = temperature, y = total_flux, fill = temperature)) +
+  geom_col(width = 0.6) +
+  scale_fill_manual(values = c("Cold (4°C)" = "#1f77b4", "Warm (20°C)" = "#ff7f0e")) +
+  labs(
+    title = "Total Energy Flux in Food Web",
+    y = "Total Flux (J/s)",
+    x = "Temperature",
+    fill = ""
+  ) +
+  theme_light()
+
+```
+
+The results from this scenario align with expectation for real communities. Warming is likely to filter out certain species- particularly those adapted to cold environments or occupying higher trophic levels (e.g., generally those with low biomasses). This filtering reduces the magnitude of the energy flux distribution due to the loss of organisms from the food web. As a result, the total energy demand decreases and actually becomes lower than in the cold scenario even though energetic losses to metabolism are higher under warming. This suggests that warming can shift the energetic budget of food webs and could reconfigure trophic interactions when species are lost or reduced. 
+
+# Energy flow based on species attributes
+Let's combine energy flux distributions from the warm and cold scenario and see if there's any pathways that contribute more or less energy. 
+
+```{r}
+# Sum across rows = total energy each species passes on
+cold.species.flux <- rowSums(cold.fluxes)
+warm.species.flux <- rowSums(warm.fluxes)
+
+species.flux.df <- data.frame(
+  species = species.level$names,
+  bodymass = species.level$bodymasses,
+  biomass = species.level$biomasses,
+  flux_cold = cold.species.flux,
+  flux_warm = warm.species.flux
+)
+
+flux.long <- pivot_longer(
+  species.flux.df,
+  cols = starts_with("flux_"),
+  names_to = "temperature",
+  names_prefix = "flux_",
+  values_to = "flux"
+)
+
+flux.long <- flux.long[flux.long$flux > 0, ]
+
+ggplot(flux.long, aes(x = biomass, y = flux, color = temperature)) +
+  geom_point(size = 2, alpha = 0.6) +
+  geom_smooth(method = "loess", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  scale_color_manual(values = c("cold" = "#1f77b4", "warm" = "#ff7f0e")) +
+  labs(
+    x = "Biomass (mg)",
+    y = "Outgoing Energy Flux (log scale)",
+    color = "Temperature"
+  ) +
+  theme_light()
+
+```
+
+The results indicate that both large and small standing stock biomasses contribute greater to energy flux. This goes against the prediction that consumers preferentially eat the most abundant resources. If resource production does not keep up with predation, especially at the smaller biomasses, this could reduce the stability of the system. However, if those species exhibit high turnover (high P:B ratios), then it could indicate a fast energy channel that is more resilient to the effects of predation. 
